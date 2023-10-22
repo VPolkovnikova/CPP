@@ -1,0 +1,33 @@
+Vagrant.configure("2") do |config|
+    config.vm.define "linux" do |linux|
+        linux.vm.box = "generic/ubuntu2304"
+        linux.vm.provision "shell", path: "linux-configure.sh"
+        linux.vm.provider "virtualbox" do |virtualBox|
+            virtualBox.memory = "1024"
+            virtualBox.name = "Linux"
+        end
+    end
+
+    config.vm.define "mac" do |mac|
+        mac.vm.box = "ramsey/macos-catalina"
+        mac.vm.provision "shell", path: "mac-configure.sh"
+        mac.vm.provider "virtualbox" do |virtualBox|
+            virtualBox.memory = "4096"
+            virtualBox.name = "Mac"
+        end
+    end
+    
+    config.vm.define "windows" do |windows|
+        windows.vm.box = "gusztavvargadr/windows-10"
+        windows.vm.provision "shell", path: "windows-configure.bat"
+        windows.vm.provider "virtualbox" do |virtualBox|
+            virtualBox.memory = "4096"
+            virtualBox.name = "Windows"
+        end
+    end
+
+    config.vm.provider "virtualbox" do |virtualBox|
+        virtualBox.customize "pre-import", ["setproperty", "machinefolder", File.join(Dir.pwd, "VMs")]
+        virtualBox.customize "pre-boot", ["setproperty", "machinefolder", "default"]
+    end
+end
