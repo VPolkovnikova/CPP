@@ -1,0 +1,24 @@
+﻿@using static WebApplication.Models.Account.Information
+@model Output
+@{
+    ViewData["Title"] = "Про мене";
+}
+
+
+<div class="row">
+    <div class="col-6 mx-auto">
+        <div class="card">
+            <div class="card-header">
+                Інформація про тебе
+            </div>
+            <div class="card-body">
+                <ul>
+                    <li><strong>Ім'я:</strong> @Model.UserName</li>
+                    <li><strong>ФІО:</strong> @Model.FullName</li>
+                    <li><strong>Номер телефону:</strong> @Model.PhoneNumber</li>
+                    <li><strong>Пошта:</strong> @Model.Email</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,11 @@
+html {
+    font-size: 16px;
+}
+
+body {
+    background: linear-gradient(to left, #6A82FB, #FC5C7D);
+}
+
+.white-space-pre {
+    white-space: pre-wrap;
+}

@@ -1,0 +1,13 @@
+Vagrant.configure "2" do |config|
+    config.vm.box = "bento/ubuntu-20.04"
+    config.vm.network :forwarded_port, guest: 5001, host: 5001
+    config.vm.network :forwarded_port, guest: 5002, host: 5002
+    config.vm.provision :shell, path: "guest-configure.sh", privileged: false
+    config.vm.provision :file, source: "LaboratoryWork5", destination: "~/LaboratoryWork5"
+    config.vm.provision :shell, path: "guest-run.sh", privileged: false, run: :always
+
+    config.vm.provider :virtualbox do |virtual_box|
+        virtual_box.memory = 1024
+        virtual_box.name = "Linux"
+    end
+end

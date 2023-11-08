@@ -1,0 +1,32 @@
+﻿@using static WebApplication.Models.LaboratoryWork.AllModel
+@model Output
+@{
+    ViewData["Title"] = "Лабораторні роботи";
+}
+
+
+<div class="row">
+    <div class="col-6 mx-auto">
+        <div class="card">
+            <div class="card-header">
+                Лабораторні роботи
+            </div>
+            <div class="card-body">
+                <ul>
+                    @for (int i = 1; i <= Model.NumberLaboratoryWorks; ++i)
+                    {
+                        <li>
+                            <a
+                                asp-controller="LaboratoryWork"
+                                asp-action="Index"
+                                asp-route-LaboratoryWorkNumber=@i
+                            >
+                                Лабораторна робота №@i
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
