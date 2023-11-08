@@ -1,33 +1,94 @@
-Vagrant.configure("2") do |config|
+Vagrant.configure "2" do |config|
     config.vm.define "linux" do |linux|
-        linux.vm.box = "generic/ubuntu2304"
-        linux.vm.provision "shell", path: "linux-configure.sh"
-        linux.vm.provider "virtualbox" do |virtualBox|
-            virtualBox.memory = "1024"
-            virtualBox.name = "Linux"
+        linux.vm.box = "bento/ubuntu-20.04"
+        linux.vm.provision :shell, path: "linux-configure.sh", privileged: false
+        linux.vm.provider :virtualbox do |virtual_box|
+            virtual_box.memory = 1024
+            virtual_box.name = "Linux"
         end
     end
 
     config.vm.define "mac" do |mac|
         mac.vm.box = "ramsey/macos-catalina"
-        mac.vm.provision "shell", path: "mac-configure.sh"
-        mac.vm.provider "virtualbox" do |virtualBox|
-            virtualBox.memory = "4096"
-            virtualBox.name = "Mac"
+        mac.vm.provision :shell, path: "mac-configure.sh", privileged: false
+        mac.vm.synced_folder ".", "/vagrant", disabled: true
+        mac.vm.boot_timeout = (ENV.has_key? "FIRST_BOOT") ? 30 : 1200
+        mac.vm.provider :virtualbox do |virtual_box|
+            virtual_box.memory = 4096
+            virtual_box.name = "Mac"
+            virtual_box.check_guest_additions = false
+
+            virtual_box.customize [
+                "modifyvm",
+                :id,
+                "--cpuidset",
+                "00000001",
+                "000306a9",
+                "04100800",
+                "7fbae3ff",
+                "bfebfbff"
+            ]
+            virtual_box.customize [
+                "setextradata",
+                :id,
+                "VBoxInternal/Devices/efi/0/Config/DmiSystemProduct",
+                "MacBookPro10,1"
+            ]
+            virtual_box.customize [
+                "setextradata",
+                :id,
+                "VBoxInternal/Devices/efi/0/Config/DmiSystemVersion",
+                "1.0"
+            ]
+            virtual_box.customize [
+                "setextradata",
+                :id,
+                "VBoxInternal/Devices/efi/0/Config/DmiBoardProduct",
+                "Iloveapple"
+            ]
+            virtual_box.customize [
+                "setextradata",
+                :id,
+                "VBoxInternal/Devices/smc/0/Config/DeviceKey",
+                "ourhardworkbythesewordsguardedpleasedontsteal(c)AppleComputerInc"
+            ]
+            virtual_box.customize [
+                "setextradata",
+                :id,
+                "VBoxInternal/Devices/smc/0/Config/GetKeyFromRealSMC",
+                "1"
+            ]
+            
+            unless ENV.has_key? "FIRST_BOOT"
+                virtual_box.customize [
+                    "modifynvram",
+                    :id,
+                    "changevar",
+                    "--name",
+                    "Boot0000",
+                    "--filename",
+                    "MacBoot"
+                ]
+            end
         end
     end
     
     config.vm.define "windows" do |windows|
         windows.vm.box = "gusztavvargadr/windows-10"
-        windows.vm.provision "shell", path: "windows-configure.bat"
-        windows.vm.provider "virtualbox" do |virtualBox|
-            virtualBox.memory = "4096"
-            virtualBox.name = "Windows"
+        windows.vm.provision \
+            :shell,
+            path: "windows-configure-install-dotnet.bat",
+            privileged: false,
+            reboot: true
+        windows.vm.provision \
+            :shell,
+            path: "windows-configure-create-application.bat",
+            privileged: false
+        windows.vm.boot_timeout = 1800
+        windows.vm.communicator = :winssh
+        windows.vm.provider :virtualbox do |virtual_box|
+            virtual_box.memory = 4096
+            virtual_box.name = "Windows"
         end
-    end
-
-    config.vm.provider "virtualbox" do |virtualBox|
-        virtualBox.customize "pre-import", ["setproperty", "machinefolder", File.join(Dir.pwd, "VMs")]
-        virtualBox.customize "pre-boot", ["setproperty", "machinefolder", "default"]
     end
 end

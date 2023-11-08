@@ -82,7 +82,7 @@ file static class OptionsMapper
             options.FilesDirectoryPath,
             EnvironmentVariableTarget.User
         );
-        return "Зміну середовища встановлено!";
+        return "Змінну середовища встановлено!";
     }
 
 

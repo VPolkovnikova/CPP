@@ -9,7 +9,7 @@ public static class LaboratoryWork2
 
         if (!inputLines.MoveNext())
         {
-            OutputWrite("The input does not contain the number of steps.");
+            OutputWrite("Вхідний файл не містить кількості сходинок.");
             return;
         }
         if (!(
@@ -17,19 +17,22 @@ public static class LaboratoryWork2
             && numberNumbers >= 0
         ))
         {
-            OutputWrite("Invalid number of steps.");
+            OutputWrite("Недійсна кількість сходинок.");
             return;
         }
 
         if (!inputLines.MoveNext())
         {
-            OutputWrite("The input does not contain numbers written on the steps.");
+            OutputWrite("Вхідний файл не містить чисел, написаних на сходинках.");
             return;
         }
         var numberTexts = inputLines.Current.Split(' ', StringSplitOptions.RemoveEmptyEntries);
         if (numberTexts.Length != numberNumbers)
         {
-            OutputWrite($"Expected {numberNumbers} numbers, but received {numberTexts.Length}.");
+            OutputWrite(
+                $"Очікувалась кількість чисел: {numberNumbers}." +
+                $" Отримана кількість чисел: {numberTexts.Length}."
+            );
             return;
         }
 
@@ -38,7 +41,7 @@ public static class LaboratoryWork2
         {
             if (!int.TryParse(numberTexts[i], out numbers[i]))
             {
-                OutputWrite($"Invalid number №{i + 1}.");
+                OutputWrite($"Недійсне значення №{i + 1}.");
                 return;
             }
         }
